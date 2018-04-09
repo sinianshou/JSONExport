@@ -115,6 +115,9 @@ class FileRepresenter{
         fileContent += "\(lang.modelStart)"
         
         appendProperties()
+        
+        
+        appendYYModelCustomPropertyMap()
         appendSettersAndGetters()
         appendInitializers()
         appendUtilityMethods()
@@ -296,6 +299,39 @@ class FileRepresenter{
         }
     }
     
+    func appendYYModelCustomPropertyMap(){
+        if (lang.displayLangName == "ObjectiveC - iOS")&&(properties.count>0) {
+            fileContent += "\n"
+            var keyStartStr:String!
+            var keyEndStr:String!
+            keyStartStr = "+ (NSDictionary *)modelCustomPropertyMapper {\n    return @{\n"
+            keyEndStr = "    };\n}"
+            fileContent += keyStartStr
+            /*
+             {
+             "1qaz_a":"1q",
+             "1qaz_b":"1q",
+             "1qaz_c":"1q"
+             }
+             */
+            for propertyEnus in properties.enumerated(){
+                fileContent += creatKeyAndValue(propertyEnus.element,notLast: (propertyEnus.offset<properties.count-1))
+            }
+            fileContent += keyEndStr
+        }
+    }
+    
+    func creatKeyAndValue(_ property: Property, notLast:Bool) -> String{
+        var keyPropertyStr:String!
+        keyPropertyStr = "        @\"<!VarName!>\" = <!ConstKeyName!>"
+        if notLast {
+            keyPropertyStr.append(",")
+        }
+        keyPropertyStr.append("\n")
+        keyPropertyStr = keyPropertyStr.replacingOccurrences(of: varName, with: property.nativeName)
+        keyPropertyStr = keyPropertyStr.replacingOccurrences(of: constKeyName, with: property.constName!)
+        return keyPropertyStr
+    }
     /**
     Appends all the defined constructors (aka initializers) in lang.constructors to the fileContent
     */
