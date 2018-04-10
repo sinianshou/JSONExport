@@ -323,7 +323,7 @@ class FileRepresenter{
     
     func creatKeyAndValue(_ property: Property, notLast:Bool) -> String{
         var keyPropertyStr:String!
-        keyPropertyStr = "        @\"<!VarName!>\" = <!ConstKeyName!>"
+        keyPropertyStr = "        @\"<!VarName!>\" : <!ConstKeyName!>"
         if notLast {
             keyPropertyStr.append(",")
         }
